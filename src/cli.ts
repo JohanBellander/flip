@@ -44,9 +44,10 @@ async function main(): Promise<void> {
     .requiredOption("--viewport <WxH>", "Target viewport")
     .requiredOption("--out <zip>", "Output ZIP file path")
     .option("--theme <json>", "Optional theme JSON file")
+    .option("--penpot-bundle", "Output Penpot export-files bundle structure (.penpot)")
     .description("Produce a Penpot JSON-in-ZIP package")
     .action(async (opts) => {
-      const code = await runExport({ input: opts.input, viewport: opts.viewport, out: opts.out, theme: opts.theme });
+      const code = await runExport({ input: opts.input, viewport: opts.viewport, out: opts.out, theme: opts.theme, penpotBundle: Boolean(opts.penpotBundle) });
       process.exitCode = code;
     });
 
@@ -56,9 +57,10 @@ async function main(): Promise<void> {
     .requiredOption("--viewport <WxH>", "Target viewport")
     .requiredOption("--out <zip>", "Output ZIP file path")
     .option("--theme <json>", "Optional theme JSON file")
+    .option("--penpot-bundle", "Output Penpot export-files bundle structure (.penpot)")
     .description("Run ingest → layout → export in one go")
     .action(async (opts) => {
-      const code = await runPipeline({ input: opts.input, viewport: opts.viewport, out: opts.out, theme: opts.theme });
+      const code = await runPipeline({ input: opts.input, viewport: opts.viewport, out: opts.out, theme: opts.theme, penpotBundle: Boolean(opts.penpotBundle) });
       process.exitCode = code;
     });
 

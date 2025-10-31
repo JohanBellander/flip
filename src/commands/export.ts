@@ -10,6 +10,7 @@ export interface ExportOptions {
   viewport: string;
   out: string;
   theme?: string;
+  penpotBundle?: boolean;
 }
 
 export async function runExport(options: ExportOptions): Promise<number> {
@@ -92,17 +93,17 @@ export async function runExport(options: ExportOptions): Promise<number> {
     const rootNode = scaffold?.screen?.root;
     const layers = mapToPenpotLayers(rootNode, frames!, theme);
 
-    // Build Penpot JSON objects per §7
-    const manifest = buildManifest();
-    const documentJson = buildDocumentJson(theme);
+    // Build Penpot JSON objects
     const pageJson = buildPageJson(options.viewport, viewportW, viewportH, layers);
 
-    // Prepare files for ZIP
-    const files: Array<{ name: string; content: string }> = [
-      { name: "manifest.json", content: JSON.stringify(manifest, null, 2) },
-      { name: "document.json", content: JSON.stringify(documentJson, null, 2) },
-      { name: "pages/page-1.json", content: JSON.stringify(pageJson, null, 2) },
-    ];
+    // Prepare files for ZIP depending on target format
+    const files: Array<{ name: string; content: string }> = options.penpotBundle
+      ? buildExportFilesBundleEntries({ pageJson })
+      : [
+          { name: "manifest.json", content: JSON.stringify(buildManifest(), null, 2) },
+          { name: "document.json", content: JSON.stringify(buildDocumentJson(theme), null, 2) },
+          { name: "pages/page-1.json", content: JSON.stringify(pageJson, null, 2) },
+        ];
 
     // Ensure out dir exists
     const outAbs = path.resolve(options.out);

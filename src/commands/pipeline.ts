@@ -10,6 +10,7 @@ export interface PipelineOptions {
   viewport: string;
   out: string;
   theme?: string;
+  penpotBundle?: boolean;
 }
 
 export async function runPipeline(options: PipelineOptions): Promise<number> {
@@ -50,6 +51,7 @@ export async function runPipeline(options: PipelineOptions): Promise<number> {
     viewport: options.viewport,
     out: options.out,
     theme: options.theme,
+    penpotBundle: options.penpotBundle,
   });
   return exportCode;
 }
