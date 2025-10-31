@@ -1,7 +1,7 @@
 node_modules/
 dist/
 .flip/
-.beads/
+.beads/*
 .DS_Store
 node_modules/
 dist/
@@ -10,4 +10,7 @@ dist/
 .env
 npm-debug.log*
 .beads/daemon.lock
+
+# Track beads issues file for version control
+!.beads/issues.jsonl
 
