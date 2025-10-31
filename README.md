@@ -12,8 +12,27 @@ Deterministic, offline CLI that converts a structural UI "Scaffold JSON" into a 
 - Node.js ≥ 18
 
 ### Install (one line)
+
+Windows (PowerShell):
+```powershell
+irm https://raw.githubusercontent.com/JohanBellander/flip/main/scripts/install.ps1 | iex
+```
+
+macOS/Linux:
 ```bash
-npm i -g github:JohanBellander/flip
+curl -fsSL https://raw.githubusercontent.com/JohanBellander/flip/main/scripts/install.sh | bash
+```
+
+Develop branch (latest in-progress features):
+
+PowerShell:
+```powershell
+$env:FLIP_BRANCH='develop'; irm https://raw.githubusercontent.com/JohanBellander/flip/main/scripts/install.ps1 | iex
+```
+
+Bash:
+```bash
+FLIP_BRANCH=develop curl -fsSL https://raw.githubusercontent.com/JohanBellander/flip/main/scripts/install.sh | bash
 ```
 
 ### Install (from source)
