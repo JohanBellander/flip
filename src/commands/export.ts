@@ -642,6 +642,7 @@ export function buildExportFilesBundleEntries(args: {
     version: 1,
     revn: 1,
     vern: 0,
+    features: [],
     "created-at": nowIso,
     "modified-at": nowIso,
     "is-shared": false,
