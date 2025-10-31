@@ -642,13 +642,109 @@ export function buildExportFilesBundleEntries(args: {
     : ["artboard_1"];
   const rootFrame = buildPageRootFrameJson({ pageId, shapes: artboardIds });
 
-  return [
+  const entries: Array<{ name: string; content: string }> = [
     { name: "manifest.json", content: JSON.stringify(manifest, null, 2) },
     { name: `files/${fileId}.json`, content: JSON.stringify(fileMeta, null, 2) },
     { name: `files/${fileId}/pages/${pageId}.json`, content: JSON.stringify(pageMeta, null, 2) },
     { name: `files/${fileId}/pages/${pageId}/00000000-0000-0000-0000-000000000000.json`, content: JSON.stringify(rootFrame, null, 2) },
     { name: `files/${fileId}/pages/${pageId}/${pageId}.json`, content: JSON.stringify(args.pageJson, null, 2) },
   ];
+
+  // Generate minimal Penpot shape JSON files from pageJson layers
+  // This flattens artboard -> layers (and nested groups) into per-shape files with parent links
+  try {
+    const page: any = args.pageJson || {};
+    const artboards: any[] = Array.isArray(page.artboards) ? page.artboards : [];
+
+    const shapeFiles: Array<{ id: string; parentId: string | null; json: any }> = [];
+
+    function emitShape(id: string, parentId: string | null, layer: any, frameFallback?: any) {
+      const frame = layer?.frame || frameFallback || { x: 0, y: 0, w: 0, h: 0 };
+      const base: any = {
+        id,
+        name: String(layer?.name || layer?.type || "shape"),
+        type: String(layer?.type || "group"),
+        x: frame.x || 0,
+        y: frame.y || 0,
+        width: frame.w || 0,
+        height: frame.h || 0,
+        rotation: 0,
+        selrect: { x: frame.x || 0, y: frame.y || 0, width: frame.w || 0, height: frame.h || 0, x1: frame.x || 0, y1: frame.y || 0, x2: (frame.x || 0) + (frame.w || 0), y2: (frame.y || 0) + (frame.h || 0) },
+        points: [
+          { x: frame.x || 0, y: frame.y || 0 },
+          { x: (frame.x || 0) + (frame.w || 0), y: frame.y || 0 },
+          { x: (frame.x || 0) + (frame.w || 0), y: (frame.y || 0) + (frame.h || 0) },
+          { x: frame.x || 0, y: (frame.y || 0) + (frame.h || 0) },
+        ],
+        transform: { a: 1.0, b: 0.0, c: 0.0, d: 1.0, e: 0.0, f: 0.0 },
+        transformInverse: { a: 1.0, b: 0.0, c: 0.0, d: 1.0, e: 0.0, f: 0.0 },
+        parentId: parentId,
+        frameId: parentId,
+        flipX: null,
+        flipY: null,
+        strokes: Array.isArray(layer?.strokes) ? layer.strokes : [],
+        fills: Array.isArray(layer?.fills) ? layer.fills : [],
+        pageId: pageId,
+      };
+
+      if (layer?.type === "text" && layer?.text) {
+        base.content = {
+          type: "root",
+          children: [
+            {
+              type: "paragraph-set",
+              children: [
+                {
+                  type: "paragraph",
+                  children: [
+                    {
+                      fontFamily: layer.text.fontFamily,
+                      fontSize: String(layer.text.fontSize),
+                      fontWeight: "400",
+                      lineHeight: String(layer.text.lineHeight),
+                      text: String(layer.text.value ?? ""),
+                      fills: Array.isArray(base.fills) && base.fills.length > 0 ? base.fills : [{ fillColor: "#111827", fillOpacity: 1 }],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+          fills: [],
+        };
+      }
+
+      shapeFiles.push({ id, parentId, json: base });
+
+      // Recurse for groups
+      const children: any[] = Array.isArray(layer?.children) ? layer.children : [];
+      children.forEach((child) => {
+        const childId = String(child?.id || genId("layer"));
+        emitShape(childId, id, child);
+      });
+    }
+
+    artboards.forEach((art) => {
+      const artId = String(art?.id || genId("artboard"));
+      // Emit an artboard container as a shape so children can parent to it
+      emitShape(artId, null, { ...art, type: "artboard" }, art?.frame || { x: 0, y: 0, w: (art?.frame?.w ?? 0), h: (art?.frame?.h ?? 0) });
+      const layers: any[] = Array.isArray(art?.layers) ? art.layers : [];
+      layers.forEach((layer) => {
+        const id = String(layer?.id || genId("layer"));
+        emitShape(id, artId, layer);
+      });
+    });
+
+    // Append one file per shape
+    shapeFiles.forEach((s) => {
+      entries.push({
+        name: `files/${fileId}/pages/${pageId}/${s.id}.json`,
+        content: JSON.stringify(s.json, null, 2),
+      });
+    });
+  } catch {}
+
+  return entries;
 }
 
 function buildDocumentJson(styles: PenpotStyles): any {
