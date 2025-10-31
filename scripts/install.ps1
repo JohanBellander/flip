@@ -47,17 +47,17 @@ try {
   $shimPs1 = Join-Path $globalBin 'flip.ps1'
   $targetJs = Join-Path $globalBin 'node_modules/flip/dist/cli.js'
 
-  $cmdContent = @"
+  $cmdContent = @'
 @echo off
 node "%~dp0node_modules\flip\dist\cli.js" %*
-"@
+'@
   Set-Content -Encoding ASCII -Path $shimCmd -Value $cmdContent
 
-  $ps1Content = @"
+  $ps1Content = @'
 $ErrorActionPreference = 'Stop'
-$script = Join-Path $PSScriptRoot 'node_modules/flip/dist/cli.js'
+$script = Join-Path $PSScriptRoot "node_modules/flip/dist/cli.js"
 node "$script" @args
-"@
+'@
   Set-Content -Encoding UTF8 -Path $shimPs1 -Value $ps1Content
 } catch {}
 
