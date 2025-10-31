@@ -1,3 +1,15 @@
+export interface PipelineOptions {
+  input: string;
+  viewport: string;
+  out: string;
+  theme?: string;
+}
+
+export async function runPipeline(_opts: PipelineOptions): Promise<number> {
+  // Not implemented yet
+  return 0;
+}
+
 import { ExitCode } from "../constants/exitCodes";
 import { initRunFolder } from "../utils/runFolder";
 import { createDiagnostics, writeDiagnostics } from "../utils/diagnostics";

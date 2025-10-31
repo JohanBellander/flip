@@ -1,3 +1,43 @@
+import * as fs from "fs";
+import * as path from "path";
+import { createRunFolder } from "../run/run";
+import { validateScaffold } from "../schema/validate";
+
+export interface IngestOptions {
+  input: string;
+}
+
+// Exit codes per spec §3
+// 0 Success
+// 2 Invalid input/schema
+// 4 Internal/file I/O error
+export async function runIngest(opts: IngestOptions): Promise<number> {
+  try {
+    const raw = await fs.promises.readFile(opts.input, "utf-8");
+    const parsed = JSON.parse(raw);
+    const result = validateScaffold(parsed);
+
+    const runDir = createRunFolder();
+    const outPath = path.join(runDir, "ingest.json");
+    const artifact = {
+      ok: result.issues.every((i) => i.severity !== "error"),
+      issues: result.issues,
+      scaffold: result.normalized,
+    };
+    await fs.promises.writeFile(outPath, JSON.stringify(artifact, null, 2));
+
+    if (!artifact.ok) {
+      process.stderr.write(`ingest: validation failed; see ${outPath}\n`);
+      return 2;
+    }
+    process.stderr.write(`ingest: wrote ${outPath}\n`);
+    return 0;
+  } catch (err) {
+    process.stderr.write(`ingest: error ${String(err)}\n`);
+    return 4;
+  }
+}
+
 import { ExitCode } from "../constants/exitCodes";
 import { initRunFolder } from "../utils/runFolder";
 import { createDiagnostics, writeDiagnostics, DiagnosticIssue } from "../utils/diagnostics";

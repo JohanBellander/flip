@@ -1,3 +1,14 @@
+export interface LayoutOptions {
+  input: string;
+  viewports: string;
+  out?: string;
+}
+
+export async function runLayout(_opts: LayoutOptions): Promise<number> {
+  // Not implemented yet
+  return 0;
+}
+
 import { ExitCode } from "../constants/exitCodes";
 import { initRunFolder } from "../utils/runFolder";
 import { createDiagnostics, writeDiagnostics, DiagnosticIssue } from "../utils/diagnostics";

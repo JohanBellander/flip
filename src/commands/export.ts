@@ -1,3 +1,15 @@
+export interface ExportOptions {
+  input: string;
+  viewport: string;
+  out: string;
+  theme?: string;
+}
+
+export async function runExport(_opts: ExportOptions): Promise<number> {
+  // Not implemented yet
+  return 0;
+}
+
 import { ExitCode } from "../constants/exitCodes";
 import { getLatestRunFolder, initRunFolder } from "../utils/runFolder";
 import { createDiagnostics, writeDiagnostics } from "../utils/diagnostics";

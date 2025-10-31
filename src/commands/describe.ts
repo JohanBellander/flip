@@ -1,3 +1,22 @@
+export interface DescribeOptions {
+  format: string;
+}
+
+export async function runDescribe(opts: DescribeOptions): Promise<number> {
+  if (opts.format === 'json') {
+    const out = {
+      name: 'FLIP',
+      version: '0.1.0',
+      commands: ['ingest', 'layout', 'export', 'pipeline', 'describe'],
+      exitCodes: { success: 0, invalid: 2, blocking: 3, io: 4, unsupported: 5 }
+    };
+    process.stdout.write(JSON.stringify(out, null, 2) + '\n');
+  } else {
+    process.stdout.write('FLIP CLI\n');
+  }
+  return 0;
+}
+
 import { ExitCode } from "../constants/exitCodes";
 
 export interface DescribeOptions {
