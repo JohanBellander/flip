@@ -542,11 +542,16 @@ function mapToPenpotLayers(root: any, frames: Record<string, Frame>, styles: Pen
       });
       // Optional bottom rule under header
       children.push(rectangleLayer(`${name}/header-rule`, { x: frame.x, y: frame.y + headerH, w: frame.w, h: 1 }, styles.colors.surface, { color: styles.colors.fieldBorder, weight: 1 }));
-      // Body sample rows (3)
-      const sampleRows = 3;
-      const rowH = 24;
-      for (let r = 0; r < sampleRows; r++) {
-        const cy = bodyY + r * (rowH + 8);
+      // Body rows: use provided rows or default to 3 sample rows, and clamp to the table frame height
+      const requestedRows = Number.isFinite((node as any)?.rows) ? Math.max(0, Number((node as any).rows)) : 3;
+      const rowH = 24; // text height ~16 with vertical padding
+      const rowGap = 8;
+      const availableBodyHeight = Math.max(0, frame.h - headerH - rowGap);
+      const rowsThatFit = requestedRows > 0 ? Math.max(0, Math.floor((availableBodyHeight + rowGap) / (rowH + rowGap))) : 0;
+      const rowsToRender = Math.min(requestedRows, rowsThatFit);
+
+      for (let r = 0; r < rowsToRender; r++) {
+        const cy = bodyY + r * (rowH + rowGap);
         for (let i = 0; i < Math.max(1, columns.length); i++) {
           const cx = frame.x + i * colW + 8;
           children.push(textLayer(`${name}/td/${r}/${i}`, { x: cx, y: cy, w: Math.max(0, colW - 16), h: 16 }, "–", 12));
