@@ -431,7 +431,7 @@ function mapToPenpotLayers(root: any, frames: Record<string, Frame>, styles: Pen
 
   function textLayer(name: string, frame: Frame, value: string, fontSize?: number, align?: "left" | "center" | "right"): Layer {
     return {
-      id: genId("layer"),
+      id: genId(),
       type: "text",
       name,
       visible: true,
@@ -449,7 +449,7 @@ function mapToPenpotLayers(root: any, frames: Record<string, Frame>, styles: Pen
 
   function rectangleLayer(name: string, frame: Frame, fill: PenpotColor, stroke?: { color: PenpotColor; weight: number }, cornerRadius?: number): Layer {
     const layer: any = {
-      id: genId("layer"),
+      id: genId(),
       type: "rectangle",
       name,
       visible: true,
@@ -754,23 +754,23 @@ export function buildExportFilesBundleEntries(args: {
 
 function buildDocumentJson(styles: PenpotStyles): any {
   return {
-    id: `doc_${genId("doc")}`,
+    id: `doc_${randomUUID()}`,
     name: "FLIP Export",
     pages: [{ id: "page_1", name: "Screen", artboards: ["artboard_1"] }],
     styles,
   };
 }
 
-function buildPageJson(viewport: string, w: number, h: number, layers: Layer[]): any {
+function buildPageJson(args: { pageId: string; artboardId: string; viewport: string; w: number; h: number; layers: Layer[] }): any {
   return {
-    id: "page_1",
+    id: args.pageId,
     name: "Screen",
     artboards: [
       {
-        id: "artboard_1",
-        name: `screen-${viewport}`,
-        frame: { x: 0, y: 0, w, h },
-        layers,
+        id: args.artboardId,
+        name: `screen-${args.viewport}`,
+        frame: { x: 0, y: 0, w: args.w, h: args.h },
+        layers: args.layers,
       },
     ],
   };
