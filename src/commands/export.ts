@@ -636,10 +636,17 @@ export function buildExportFilesBundleEntries(args: {
     artboards: ["artboard_1"],
   };
 
+  // Build page root frame JSON (00000000-...)
+  const artboardIds: string[] = Array.isArray(args.pageJson?.artboards)
+    ? args.pageJson.artboards.map((a: any) => String(a?.id)).filter(Boolean)
+    : ["artboard_1"];
+  const rootFrame = buildPageRootFrameJson({ pageId, shapes: artboardIds });
+
   return [
     { name: "manifest.json", content: JSON.stringify(manifest, null, 2) },
     { name: `files/${fileId}.json`, content: JSON.stringify(fileMeta, null, 2) },
     { name: `files/${fileId}/pages/${pageId}.json`, content: JSON.stringify(pageMeta, null, 2) },
+    { name: `files/${fileId}/pages/${pageId}/00000000-0000-0000-0000-000000000000.json`, content: JSON.stringify(rootFrame, null, 2) },
     { name: `files/${fileId}/pages/${pageId}/${pageId}.json`, content: JSON.stringify(args.pageJson, null, 2) },
   ];
 }
@@ -665,6 +672,45 @@ function buildPageJson(viewport: string, w: number, h: number, layers: Layer[]):
         layers,
       },
     ],
+  };
+}
+
+// Build the Penpot page root frame JSON with fixed zero UUID and shape refs
+function buildPageRootFrameJson(args: { pageId: string; shapes: string[] }): any {
+  const zero = "00000000-0000-0000-0000-000000000000";
+  return {
+    id: zero,
+    name: "Root Frame",
+    type: "frame",
+    x: 0,
+    y: 0,
+    width: 0.01,
+    height: 0.01,
+    rotation: 0,
+    selrect: { x: 0, y: 0, width: 0.01, height: 0.01, x1: 0, y1: 0, x2: 0.01, y2: 0.01 },
+    points: [
+      { x: 0.0, y: 0.0 },
+      { x: 0.01, y: 0.0 },
+      { x: 0.01, y: 0.01 },
+      { x: 0.0, y: 0.01 },
+    ],
+    transform: { a: 1.0, b: 0.0, c: 0.0, d: 1.0, e: 0.0, f: 0.0 },
+    transformInverse: { a: 1.0, b: 0.0, c: 0.0, d: 1.0, e: 0.0, f: 0.0 },
+    parentId: zero,
+    frameId: zero,
+    flipX: null,
+    flipY: null,
+    hideFillOnExport: false,
+    r2: 0,
+    proportionLock: false,
+    pageId: args.pageId,
+    r3: 0,
+    r1: 0,
+    strokes: [],
+    proportion: 1.0,
+    r4: 0,
+    fills: [{ fillColor: "#FFFFFF", fillOpacity: 1 }],
+    shapes: Array.isArray(args.shapes) ? args.shapes : [],
   };
 }
 
