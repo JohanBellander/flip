@@ -260,6 +260,9 @@ function computeLayout(root: any, viewportW: number, viewportH: number, settings
   function layoutNode(node: any, x: number, y: number, availW: number, availH: number): Frame {
     const type = node?.type;
     const id = node?.id || `${type}-${Math.random().toString(36).slice(2)}`;
+    if (node && !node.id) {
+      node.id = id; // ensure stable ids so frames[] matches mapToPenpotLayers
+    }
     const { widthPolicy, heightPolicy } = parsePolicies(node);
     const minSize = node?.minSize || {};
     const maxSize = node?.maxSize || {};
