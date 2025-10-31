@@ -684,6 +684,18 @@ export function buildExportFilesBundleEntries(args: {
 
     const shapeFiles: Array<{ id: string; parentId: string | null; json: any }> = [];
 
+    function toPenpotFills(layerFills: any): any[] {
+      const fills: any[] = Array.isArray(layerFills) ? layerFills : [];
+      const out: any[] = [];
+      fills.forEach((f: any) => {
+        const t = String(f?.type || "");
+        if (t === "solid" && typeof f?.color === "string") {
+          out.push({ fillColor: f.color, fillOpacity: 1 });
+        }
+      });
+      return out;
+    }
+
     function emitShape(id: string, parentId: string | null, layer: any, frameFallback?: any) {
       const frame = layer?.frame || frameFallback || { x: 0, y: 0, w: 0, h: 0 };
       const base: any = {
@@ -708,10 +720,14 @@ export function buildExportFilesBundleEntries(args: {
         frameId: parentId,
         flipX: null,
         flipY: null,
-        strokes: Array.isArray(layer?.strokes) ? layer.strokes : [],
-        fills: Array.isArray(layer?.fills) ? layer.fills : [],
+        strokes: [],
+        fills: toPenpotFills(layer?.fills),
         pageId: pageId,
       };
+
+      if (base.type === "artboard" && (!Array.isArray(base.fills) || base.fills.length === 0)) {
+        base.fills = [{ fillColor: "#FFFFFF", fillOpacity: 1 }];
+      }
 
       if (layer?.type === "text" && layer?.text) {
         base.content = {
@@ -740,14 +756,17 @@ export function buildExportFilesBundleEntries(args: {
         };
       }
 
-      shapeFiles.push({ id, parentId, json: base });
-
-      // Recurse for groups
+      // Recurse for groups and collect child ids
       const children: any[] = Array.isArray(layer?.children) ? layer.children : [];
+      const childIds: string[] = [];
       children.forEach((child) => {
         const childId = String(child?.id || genId());
+        childIds.push(childId);
         emitShape(childId, id, child);
       });
+      if (childIds.length > 0) base.shapes = childIds;
+
+      shapeFiles.push({ id, parentId, json: base });
     }
 
     artboards.forEach((art) => {
