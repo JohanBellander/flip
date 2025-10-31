@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "1.0.0",
+  "screen": {
+    "id": "form-example",
+    "title": "Form Example",
+    "root": {
+      "id": "root-stack",
+      "type": "Stack",
+      "direction": "vertical",
+      "gap": 16,
+      "padding": 24,
+      "children": [
+        {
+          "id": "signup-form",
+          "type": "Form",
+          "title": "Sign Up",
+          "fields": [
+            { "id": "f-name", "type": "Field", "label": "Name", "inputType": "text", "required": true },
+            { "id": "f-email", "type": "Field", "label": "Email", "inputType": "email", "required": true, "helpText": "We'll never share your email." },
+            { "id": "f-pass", "type": "Field", "label": "Password", "inputType": "password", "required": true }
+          ],
+          "actions": [
+            { "id": "a-submit", "type": "Button", "text": "Create Account", "roleHint": "primary" },
+            { "id": "a-cancel", "type": "Button", "text": "Cancel", "roleHint": "secondary" }
+          ],
+          "states": ["default"]
+        }
+      ]
+    }
+  },
+  "settings": {
+    "spacingScale": [4, 8, 12, 16, 24, 32],
+    "minTouchTarget": { "w": 44, "h": 44 },
+    "breakpoints": ["320x640", "768x1024", "1280x800"]
+  }
+}
+
+

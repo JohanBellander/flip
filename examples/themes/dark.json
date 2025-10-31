@@ -1,0 +1,19 @@
+{
+  "colors": {
+    "primary": "#7AA2FF",
+    "secondary": "#9CA3AF",
+    "danger": "#F87171",
+    "text": "#F9FAFB",
+    "muted": "#9CA3AF",
+    "surface": "#111827",
+    "fieldBorder": "#374151"
+  },
+  "typography": {
+    "fontFamily": "Inter, Arial, sans-serif",
+    "fontSize": 16,
+    "lineHeight": 1.4
+  },
+  "radii": { "button": 6, "field": 4 }
+}
+
+

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0.0",
+  "screen": {
+    "id": "table-example",
+    "title": "Table Example",
+    "root": {
+      "id": "root-stack",
+      "type": "Stack",
+      "direction": "vertical",
+      "gap": 16,
+      "padding": 24,
+      "children": [
+        { "id": "title", "type": "Text", "text": "Users", "fontSize": 20 },
+        {
+          "id": "users-table",
+          "type": "Table",
+          "title": "Users",
+          "columns": ["Name", "Email", "Role"],
+          "rows": 3,
+          "responsive": { "strategy": "wrap", "minColumnWidth": 160 },
+          "states": ["default"]
+        }
+      ]
+    }
+  },
+  "settings": {
+    "spacingScale": [4, 8, 12, 16, 24, 32],
+    "minTouchTarget": { "w": 44, "h": 44 },
+    "breakpoints": ["320x640", "768x1024", "1280x800"]
+  }
+}
+
+

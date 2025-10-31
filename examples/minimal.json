@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "1.0.0",
+  "screen": {
+    "id": "minimal-example",
+    "title": "Minimal Example",
+    "root": {
+      "id": "root-stack",
+      "type": "Stack",
+      "direction": "vertical",
+      "gap": 16,
+      "padding": 24,
+      "children": [
+        { "id": "welcome-text", "type": "Text", "text": "Welcome to FLIP", "fontSize": 24 },
+        { "id": "action-button", "type": "Button", "text": "Get Started", "roleHint": "primary", "minSize": { "w": 44, "h": 44 } }
+      ]
+    }
+  },
+  "settings": {
+    "spacingScale": [4, 8, 12, 16, 24, 32],
+    "minTouchTarget": { "w": 44, "h": 44 },
+    "breakpoints": ["320x640", "768x1024", "1280x800"]
+  }
+}
+
+
