@@ -47,7 +47,10 @@ try {
   $shimPs1 = Join-Path $globalBin 'flip.ps1'
   $targetJs = Join-Path $globalBin 'node_modules/flip/dist/cli.js'
 
-  $cmdContent = "@echo off`r`nnode \"%~dp0node_modules\\flip\\dist\\cli.js\" %*`r`n"
+  $cmdContent = @"
+@echo off
+node "%~dp0node_modules\flip\dist\cli.js" %*
+"@
   Set-Content -Encoding ASCII -Path $shimCmd -Value $cmdContent
 
   $ps1Content = @"
