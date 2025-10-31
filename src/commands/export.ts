@@ -629,22 +629,30 @@ export function buildExportFilesBundleEntries(args: {
     files: [{ id: fileId, name: fileName }],
   });
 
+  // Build page root frame JSON (00000000-...)
+  const artboardIds: string[] = Array.isArray(args.pageJson?.artboards)
+    ? args.pageJson.artboards.map((a: any) => String(a?.id)).filter(Boolean)
+    : ["artboard_1"];
+  
+  // File metadata (mirror Penpot structure; avoid unsupported keys like 'version')
+  const nowIso = new Date().toISOString();
   const fileMeta = {
     id: fileId,
     name: fileName,
-    pages: [pageId],
+    revn: 1,
+    vern: 0,
+    createdAt: nowIso,
+    modifiedAt: nowIso,
+    isShared: false,
+    hasMediaTrimmed: false,
+    options: { componentsV2: true, baseFontSize: "16px" },
   };
 
   const pageMeta = {
     id: pageId,
     name: "Screen",
-    artboards: ["artboard_1"],
+    artboards: artboardIds,
   };
-
-  // Build page root frame JSON (00000000-...)
-  const artboardIds: string[] = Array.isArray(args.pageJson?.artboards)
-    ? args.pageJson.artboards.map((a: any) => String(a?.id)).filter(Boolean)
-    : ["artboard_1"];
   const rootFrame = buildPageRootFrameJson({ pageId, shapes: artboardIds });
 
   const entries: Array<{ name: string; content: string }> = [
