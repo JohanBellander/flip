@@ -1,6 +1,9 @@
 import { ExitCode } from "../constants/exitCodes";
 import { initRunFolder } from "../utils/runFolder";
 import { createDiagnostics, writeDiagnostics } from "../utils/diagnostics";
+import { runIngest } from "./ingest";
+import { runLayout } from "./layout";
+import { runExport } from "./export";
 
 export interface PipelineOptions {
   input: string;
@@ -28,8 +31,27 @@ export async function runPipeline(options: PipelineOptions): Promise<number> {
   }
   const runDir = await initRunFolder();
   process.env.FLIP_RUN_DIR = runDir;
-  console.log("flip pipeline: Not implemented yet");
-  return ExitCode.Success;
+
+  // Step 1: ingest
+  const ingestCode = await runIngest({ input: options.input });
+  if (ingestCode !== ExitCode.Success) {
+    return ingestCode;
+  }
+
+  // Step 2: layout for the chosen viewport, writing artifacts into the same run folder
+  const layoutCode = await runLayout({ input: options.input, viewports: options.viewport, out: runDir });
+  if (layoutCode !== ExitCode.Success) {
+    return layoutCode;
+  }
+
+  // Step 3: export using theme if provided
+  const exportCode = await runExport({
+    input: options.input,
+    viewport: options.viewport,
+    out: options.out,
+    theme: options.theme,
+  });
+  return exportCode;
 }
 
 
