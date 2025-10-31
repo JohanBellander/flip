@@ -75,14 +75,24 @@ Artifacts and diagnostics are written to a timestamped run folder under `.flip/r
 - `flip describe` — Output supported schema and capabilities (`--format json|text`)
 - `flip ingest` — Validate and normalize the scaffold (`--input <file>`)
 - `flip layout` — Compute frames per viewport (`--input <file> --viewports <WxH[,WxH,...]> [--out <dir>]`)
-- `flip export` — Produce a Penpot JSON‑in‑ZIP (`--input <file> --viewport <WxH> --out <zip> [--theme <json>]`)
-- `flip pipeline` — Run ingest → layout → export (`--input <file> --viewport <WxH> --out <zip> [--theme <json>]`)
+- `flip export` — Produce a Penpot JSON‑in‑ZIP bundle (.zip or .penpot) (`--input <file> --viewport <WxH> --out <bundle> [--theme <json>]`)
+- `flip pipeline` — Run ingest → layout → export (`--input <file> --viewport <WxH> --out <bundle> [--theme <json>]`)
 
 ### Documentation
 - `FLIP-SPEC.md` — Full data and behavior specification
 - `IMPLEMENTATION_PLAN.md` — Architecture and delivery milestones
 - `examples/README.md` — Example scaffolds and themes
 - `AGENTS.md` — Repository workflow and task tracking rules
+
+### Penpot bundles (.penpot)
+- **What is produced**: A Penpot‑compatible JSON‑in‑ZIP package. You may keep the `.zip` extension or rename it to `.penpot`; Penpot accepts both when importing.
+- **How to use**: In Penpot, choose File → Import and select the generated `.zip` or `.penpot` file.
+- **Current limitations**:
+  - Single page with one artboard per export (per chosen viewport)
+  - Supported layers: `group`, `rectangle`, `text` only
+  - No interactions, prototyping links, or components/instances
+  - Basic styles only; custom fonts are not embedded unless provided as assets
+  - Round‑trip editing back into FLIP is not supported
 
 ### Testing
 ```bash
