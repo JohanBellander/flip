@@ -588,6 +588,22 @@ function buildManifest(): any {
   };
 }
 
+// Penpot official export bundle manifest ("type": "penpot/export-files")
+export function buildPenpotExportFilesManifest(args: {
+  files: Array<{ id: string; name: string; features?: string[] }>;
+  relations?: Array<[string, string]>;
+}): any {
+  const { files, relations } = args;
+  return {
+    type: "penpot/export-files",
+    version: 1,
+    generatedBy: "FLIP/1.0.0",
+    refer: "penpot",
+    files: files.map(f => ({ id: f.id, name: f.name, features: f.features ?? [] })),
+    relations: relations ?? [],
+  };
+}
+
 function buildDocumentJson(styles: PenpotStyles): any {
   return {
     id: `doc_${genId("doc")}`,
