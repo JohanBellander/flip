@@ -636,19 +636,19 @@ export function buildExportFilesBundleEntries(args: {
   
   // File metadata (mirror Penpot structure; avoid unsupported keys like 'version')
   const nowIso = new Date().toISOString();
-  const fileMeta = {
+  const fileMeta: any = {
     id: fileId,
     name: fileName,
     revn: 1,
     vern: 0,
-    createdAt: nowIso,
-    modifiedAt: nowIso,
-    isShared: false,
-    hasMediaTrimmed: false,
-    options: { componentsV2: true, baseFontSize: "16px" },
+    "created-at": nowIso,
+    "modified-at": nowIso,
+    "is-shared": false,
+    "has-media-trimmed": false,
+    options: { "components-v2": true, "base-font-size": "16px" },
     data: {
       pages: [pageId],
-      pagesIndex: {
+      "pages-index": {
         [pageId]: {
           id: pageId,
           name: "Screen",
