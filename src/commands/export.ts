@@ -667,7 +667,7 @@ export function buildExportFilesBundleEntries(args: {
   const pageMeta = {
     id: pageId,
     name: "Screen",
-    artboards: artboardIds,
+    index: 0,
   };
   const rootFrame = buildPageRootFrameJson({ pageId, shapes: artboardIds });
 
@@ -723,6 +723,8 @@ export function buildExportFilesBundleEntries(args: {
         frameId: parentId,
         flipX: null,
         flipY: null,
+        hideInViewer: false,
+        growType: "fixed",
         strokes: [],
         fills: toPenpotFills(layer?.fills),
         pageId: pageId,
@@ -775,7 +777,7 @@ export function buildExportFilesBundleEntries(args: {
     artboards.forEach((art) => {
       const artId = String(art?.id || genId());
       // Emit an artboard container as a shape so children can parent to it
-      emitShape(artId, null, { ...art, type: "artboard" }, art?.frame || { x: 0, y: 0, w: (art?.frame?.w ?? 0), h: (art?.frame?.h ?? 0) });
+      emitShape(artId, null, { ...art, type: "frame" }, art?.frame || { x: 0, y: 0, w: (art?.frame?.w ?? 0), h: (art?.frame?.h ?? 0) });
       const layers: any[] = Array.isArray(art?.layers) ? art.layers : [];
       layers.forEach((layer) => {
         const id = String(layer?.id || genId());
