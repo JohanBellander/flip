@@ -604,6 +604,46 @@ export function buildPenpotExportFilesManifest(args: {
   };
 }
 
+// Build entries for a Penpot export-files bundle layout
+// Creates:
+// - manifest.json (type: penpot/export-files)
+// - files/<file-id>.json (file metadata)
+// - files/<file-id>/pages/<page-id>.json (page metadata)
+// - files/<file-id>/pages/<page-id>/<page-id>.json (page content)
+export function buildExportFilesBundleEntries(args: {
+  pageJson: any;
+  fileId?: string;
+  pageId?: string;
+  fileName?: string;
+}): Array<{ name: string; content: string }> {
+  const fileId = args.fileId ?? "file-1";
+  const pageId = args.pageId ?? "page-1";
+  const fileName = args.fileName ?? "FLIP Export";
+
+  const manifest = buildPenpotExportFilesManifest({
+    files: [{ id: fileId, name: fileName }],
+  });
+
+  const fileMeta = {
+    id: fileId,
+    name: fileName,
+    pages: [pageId],
+  };
+
+  const pageMeta = {
+    id: pageId,
+    name: "Screen",
+    artboards: ["artboard_1"],
+  };
+
+  return [
+    { name: "manifest.json", content: JSON.stringify(manifest, null, 2) },
+    { name: `files/${fileId}.json`, content: JSON.stringify(fileMeta, null, 2) },
+    { name: `files/${fileId}/pages/${pageId}.json`, content: JSON.stringify(pageMeta, null, 2) },
+    { name: `files/${fileId}/pages/${pageId}/${pageId}.json`, content: JSON.stringify(args.pageJson, null, 2) },
+  ];
+}
+
 function buildDocumentJson(styles: PenpotStyles): any {
   return {
     id: `doc_${genId("doc")}`,
