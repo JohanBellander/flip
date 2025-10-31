@@ -1,3 +1,79 @@
+import { Command } from 'commander';
+import * as fs from 'fs';
+import * as path from 'path';
+
+const program = new Command();
+
+program
+  .name('flip')
+  .description('FLIP — From LUMA Into Penpot (TypeScript CLI)')
+  .version('0.1.0');
+
+program
+  .command('ingest')
+  .description('Validate and normalize input scaffold (stub)')
+  .requiredOption('--input <file>', 'Path to scaffold JSON')
+  .action(() => {
+    console.error('ingest: not implemented yet');
+    process.exit(0);
+  });
+
+program
+  .command('layout')
+  .description('Compute frames per viewport (stub)')
+  .requiredOption('--input <file>', 'Path to scaffold JSON')
+  .requiredOption('--viewports <WxH[,WxH,...]>', 'Comma-separated viewports')
+  .option('--out <dir>', 'Output directory')
+  .action(() => {
+    console.error('layout: not implemented yet');
+    process.exit(0);
+  });
+
+program
+  .command('export')
+  .description('Produce a Penpot JSON-in-ZIP package (stub)')
+  .requiredOption('--input <file>', 'Path to scaffold JSON')
+  .requiredOption('--viewport <WxH>', 'Viewport WxH')
+  .requiredOption('--out <zip>', 'Output zip path')
+  .option('--theme <json>', 'Theme JSON path')
+  .action(() => {
+    console.error('export: not implemented yet');
+    process.exit(0);
+  });
+
+program
+  .command('pipeline')
+  .description('Run ingest → layout → export (stub)')
+  .requiredOption('--input <file>', 'Path to scaffold JSON')
+  .requiredOption('--viewport <WxH>', 'Viewport WxH')
+  .requiredOption('--out <zip>', 'Output zip path')
+  .option('--theme <json>', 'Theme JSON path')
+  .action(() => {
+    console.error('pipeline: not implemented yet');
+    process.exit(0);
+  });
+
+program
+  .command('describe')
+  .description('Output machine-readable capabilities and schema (stub)')
+  .option('--format <fmt>', 'json|text', 'json')
+  .action((opts: { format: string }) => {
+    if (opts.format === 'json') {
+      const out = {
+        name: 'FLIP',
+        version: '0.1.0',
+        commands: ['ingest', 'layout', 'export', 'pipeline', 'describe'],
+        exitCodes: { success: 0, invalid: 2, blocking: 3, io: 4, unsupported: 5 }
+      };
+      process.stdout.write(JSON.stringify(out, null, 2) + '\n');
+    } else {
+      process.stdout.write('FLIP CLI (stub)\n');
+    }
+    process.exit(0);
+  });
+
+program.parseAsync(process.argv);
+
 #!/usr/bin/env node
 import { Command } from "commander";
 import { runIngest } from "./commands/ingest";

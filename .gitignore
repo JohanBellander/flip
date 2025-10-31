@@ -1,6 +1,11 @@
 node_modules/
 dist/
 .flip/
+.beads/
+.DS_Store
+node_modules/
+dist/
+.flip/
 .DS_Store
 .env
 npm-debug.log*
