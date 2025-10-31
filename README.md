@@ -1,0 +1,72 @@
+## FLIP — From LUMA Into Penpot
+
+Deterministic, offline CLI that converts a structural UI "Scaffold JSON" into a Penpot‑compatible JSON‑in‑ZIP package. FLIP standardizes validation, layout, and basic affordances before visual implementation.
+
+### What It Does
+- **Validate** a scaffold against a strict schema
+- **Compute layout** frames for chosen viewport(s)
+- **Map to Penpot** layers and **export** a ZIP Penpot can import
+- **Deterministic** output for identical inputs; no network access
+
+### Requirements
+- Node.js ≥ 18
+
+### Install (from source)
+```bash
+git clone https://github.com/your-org/FLIP.git
+cd FLIP
+npm install
+npm run build
+npm link
+```
+
+This installs the `flip` CLI from `dist/cli.js`.
+
+### Quick Start
+Use the bundled examples in `examples/` to try the CLI:
+
+```bash
+# Describe capabilities (JSON by default)
+flip describe --format json
+
+# Step 1: validate and normalize input
+flip ingest --input examples/minimal.json
+
+# Step 2: compute layout artifacts for multiple viewports
+flip layout --input examples/minimal.json --viewports 1280x800,768x1024
+
+# Step 3: export Penpot ZIP (optionally apply a theme)
+flip export --input examples/minimal.json --viewport 1280x800 \
+  --out out/flip-minimal-1280x800.zip \
+  --theme examples/themes/dark.json
+
+# Orchestrate all steps in one command
+flip pipeline --input examples/minimal.json --viewport 1280x800 \
+  --out out/flip-minimal-1280x800.zip
+```
+
+Artifacts and diagnostics are written to a timestamped run folder under `.flip/runs/<YYYYMMDD-HHMMSS-mmm>/`.
+
+### Commands
+- `flip describe` — Output supported schema and capabilities (`--format json|text`)
+- `flip ingest` — Validate and normalize the scaffold (`--input <file>`)
+- `flip layout` — Compute frames per viewport (`--input <file> --viewports <WxH[,WxH,...]> [--out <dir>]`)
+- `flip export` — Produce a Penpot JSON‑in‑ZIP (`--input <file> --viewport <WxH> --out <zip> [--theme <json>]`)
+- `flip pipeline` — Run ingest → layout → export (`--input <file> --viewport <WxH> --out <zip> [--theme <json>]`)
+
+### Documentation
+- `FLIP-SPEC.md` — Full data and behavior specification
+- `IMPLEMENTATION_PLAN.md` — Architecture and delivery milestones
+- `examples/README.md` — Example scaffolds and themes
+- `AGENTS.md` — Repository workflow and task tracking rules
+
+### Testing
+```bash
+npm test
+```
+
+### Notes
+- Output and exit codes follow the spec: 0 (success), 2 (invalid input), 3 (blocking analysis), 4 (I/O error), 5 (unsupported schema).
+- The CLI is deterministic and performs only local file I/O.
+
+
