@@ -11,6 +11,11 @@ Deterministic, offline CLI that converts a structural UI "Scaffold JSON" into a 
 ### Requirements
 - Node.js ≥ 18
 
+### Install (one line)
+```bash
+npm i -g github:JohanBellander/flip
+```
+
 ### Install (from source)
 ```bash
 git clone https://github.com/your-org/FLIP.git
