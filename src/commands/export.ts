@@ -4,6 +4,7 @@ import { createDiagnostics, writeDiagnostics } from "../utils/diagnostics";
 import { promises as fs } from "fs";
 import * as path from "path";
 import { applyOverridesToTree } from "../overrides";
+import { randomUUID } from "crypto";
 
 export interface ExportOptions {
   input: string;
@@ -94,15 +95,20 @@ export async function runExport(options: ExportOptions): Promise<number> {
     const layers = mapToPenpotLayers(rootNode, frames!, theme);
 
     // Build Penpot JSON objects
-    const pageJson = buildPageJson(options.viewport, viewportW, viewportH, layers);
+    // Generate UUIDs required by Penpot for bundle identifiers
+    const fileId = randomUUID();
+    const pageId = randomUUID();
+    const artboardId = randomUUID();
+
+    const pageJson = buildPageJson({ pageId, artboardId, viewport: options.viewport, w: viewportW, h: viewportH, layers });
 
     // Prepare files for ZIP depending on target format
     const files: Array<{ name: string; content: string }> = options.penpotBundle
-      ? buildExportFilesBundleEntries({ pageJson })
+      ? buildExportFilesBundleEntries({ pageJson, fileId, pageId })
       : [
           { name: "manifest.json", content: JSON.stringify(buildManifest(), null, 2) },
           { name: "document.json", content: JSON.stringify(buildDocumentJson(theme), null, 2) },
-          { name: "pages/page-1.json", content: JSON.stringify(pageJson, null, 2) },
+          { name: `pages/${pageId}.json`, content: JSON.stringify(pageJson, null, 2) },
         ];
 
     // Ensure out dir exists
@@ -416,10 +422,8 @@ function computeLayout(root: any, viewportW: number, viewportH: number, settings
 // ---- Mapping to Penpot layers (§8) ----
 type Layer = any;
 
-let layerCounter = 0;
-function genId(prefix: string): string {
-  layerCounter += 1;
-  return `${prefix}_${layerCounter}`;
+function genId(): string {
+  return randomUUID();
 }
 
 function mapToPenpotLayers(root: any, frames: Record<string, Frame>, styles: PenpotStyles): Layer[] {
@@ -459,7 +463,7 @@ function mapToPenpotLayers(root: any, frames: Record<string, Frame>, styles: Pen
 
   function groupLayer(name: string, frame: Frame, children: Layer[]): Layer {
     return {
-      id: genId("layer"),
+      id: genId(),
       type: "group",
       name,
       visible: true,
@@ -617,8 +621,8 @@ export function buildExportFilesBundleEntries(args: {
   pageId?: string;
   fileName?: string;
 }): Array<{ name: string; content: string }> {
-  const fileId = args.fileId ?? "file-1";
-  const pageId = args.pageId ?? "page-1";
+  const fileId = args.fileId ?? randomUUID();
+  const pageId = args.pageId ?? randomUUID();
   const fileName = args.fileName ?? "FLIP Export";
 
   const manifest = buildPenpotExportFilesManifest({
@@ -720,18 +724,18 @@ export function buildExportFilesBundleEntries(args: {
       // Recurse for groups
       const children: any[] = Array.isArray(layer?.children) ? layer.children : [];
       children.forEach((child) => {
-        const childId = String(child?.id || genId("layer"));
+        const childId = String(child?.id || genId());
         emitShape(childId, id, child);
       });
     }
 
     artboards.forEach((art) => {
-      const artId = String(art?.id || genId("artboard"));
+      const artId = String(art?.id || genId());
       // Emit an artboard container as a shape so children can parent to it
       emitShape(artId, null, { ...art, type: "artboard" }, art?.frame || { x: 0, y: 0, w: (art?.frame?.w ?? 0), h: (art?.frame?.h ?? 0) });
       const layers: any[] = Array.isArray(art?.layers) ? art.layers : [];
       layers.forEach((layer) => {
-        const id = String(layer?.id || genId("layer"));
+        const id = String(layer?.id || genId());
         emitShape(id, artId, layer);
       });
     });
