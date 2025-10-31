@@ -39,4 +39,23 @@ try {
 
 Write-Host "Installed flip CLI from $repo@$branch. Try: flip --help"
 
+# Ensure Windows shims exist and invoke Node explicitly
+try {
+  $globalBin = & npm prefix -g
+  if (-not (Test-Path $globalBin)) { $globalBin = "$env:APPDATA\npm" }
+  $shimCmd = Join-Path $globalBin 'flip.cmd'
+  $shimPs1 = Join-Path $globalBin 'flip.ps1'
+  $targetJs = Join-Path $globalBin 'node_modules/flip/dist/cli.js'
+
+  $cmdContent = "@echo off`r`nnode \"%~dp0node_modules\\flip\\dist\\cli.js\" %*`r`n"
+  Set-Content -Encoding ASCII -Path $shimCmd -Value $cmdContent
+
+  $ps1Content = @"
+$ErrorActionPreference = 'Stop'
+$script = Join-Path $PSScriptRoot 'node_modules/flip/dist/cli.js'
+node "$script" @args
+"@
+  Set-Content -Encoding UTF8 -Path $shimPs1 -Value $ps1Content
+} catch {}
+
 
