@@ -646,6 +646,17 @@ export function buildExportFilesBundleEntries(args: {
     isShared: false,
     hasMediaTrimmed: false,
     options: { componentsV2: true, baseFontSize: "16px" },
+    data: {
+      pages: [pageId],
+      pagesIndex: {
+        [pageId]: {
+          id: pageId,
+          name: "Screen",
+          index: 0,
+          objects: {},
+        },
+      },
+    },
   };
 
   const pageMeta = {
