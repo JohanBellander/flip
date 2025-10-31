@@ -1,4 +1,5 @@
 import { ExitCode } from "../constants/exitCodes";
+import { initRunFolder } from "../utils/runFolder";
 
 export interface ExportOptions {
   input: string;
@@ -12,6 +13,7 @@ export async function runExport(options: ExportOptions): Promise<number> {
     console.error("--input, --viewport, and --out are required");
     return ExitCode.InvalidInput;
   }
+  await initRunFolder();
   console.log("flip export: Not implemented yet");
   return ExitCode.Success;
 }
