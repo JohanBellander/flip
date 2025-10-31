@@ -450,7 +450,7 @@ function mapToPenpotLayers(root: any, frames: Record<string, Frame>, styles: Pen
   function rectangleLayer(name: string, frame: Frame, fill: PenpotColor, stroke?: { color: PenpotColor; weight: number }, cornerRadius?: number): Layer {
     const layer: any = {
       id: genId(),
-      type: "rectangle",
+      type: "rect",
       name,
       visible: true,
       frame,
