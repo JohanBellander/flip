@@ -1,0 +1,38 @@
+{
+  "type": "penpot\/export-files",
+  "version": 1,
+  "generatedBy": "penpot\/2.10.2-RC2",
+  "refer": "penpot",
+  "files": [
+    {
+      "id": "5b786374-066f-8104-8007-0a2270539abc",
+      "name": "Wireframing kit v1.1",
+      "features": [
+        "fdata\/path-data",
+        "design-tokens\/v1",
+        "variants\/v1",
+        "layout\/grid",
+        "components\/v2",
+        "fdata\/shape-data-type"
+      ]
+    },
+    {
+      "id": "10e879d4-e5a6-801a-8007-0a22416d201e",
+      "name": "New File 1",
+      "features": [
+        "fdata\/path-data",
+        "design-tokens\/v1",
+        "variants\/v1",
+        "layout\/grid",
+        "components\/v2",
+        "fdata\/shape-data-type"
+      ]
+    }
+  ],
+  "relations": [
+    [
+      "10e879d4-e5a6-801a-8007-0a22416d201e",
+      "5b786374-066f-8104-8007-0a2270539abc"
+    ]
+  ]
+}
