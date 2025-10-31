@@ -26,8 +26,13 @@ if (Get-Command git -ErrorAction SilentlyContinue) {
 Push-Location $workDir
 try {
   if (Test-Path 'package-lock.json') { npm ci } else { npm install }
+  if ($LASTEXITCODE -ne 0) { throw "npm install failed with exit code $LASTEXITCODE" }
+
   npm run build
+  if ($LASTEXITCODE -ne 0) { throw "npm run build failed with exit code $LASTEXITCODE" }
+
   npm link
+  if ($LASTEXITCODE -ne 0) { throw "npm link failed with exit code $LASTEXITCODE" }
 } finally {
   Pop-Location
 }
