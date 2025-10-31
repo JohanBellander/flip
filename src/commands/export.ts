@@ -639,6 +639,7 @@ export function buildExportFilesBundleEntries(args: {
   const fileMeta: any = {
     id: fileId,
     name: fileName,
+    version: 1,
     revn: 1,
     vern: 0,
     "created-at": nowIso,
