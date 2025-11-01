@@ -56,7 +56,7 @@ const defaultStyles = {
   radii: { button: 6, field: 4 },
 } as const;
 
-const layerTypes = ["group", "rectangle", "text"] as const;
+const layerTypes = ["group", "rect", "text", "frame"] as const;
 
 const exitCodes = {
   0: "Success",

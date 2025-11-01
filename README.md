@@ -2,6 +2,16 @@
 
 Deterministic, offline CLI that converts a structural UI "Scaffold JSON" into a Penpot‑compatible JSON‑in‑ZIP package. FLIP standardizes validation, layout, and basic affordances before visual implementation.
 
+FLIP is designed to be used together with **LUMA** — generate/validate the scaffold with LUMA, then visualize the same scaffold in **Penpot** using FLIP.
+
+- LUMA — Layout & UX Mockup Analyzer: `https://github.com/JohanBellander/luma`
+- Penpot — Open‑source design tool: `https://penpot.app/`
+
+#### Typical workflow (LUMA ➜ FLIP)
+1. Create or refine a scaffold with LUMA until it passes its checks
+2. Feed that scaffold JSON to FLIP to compute frames and export a Penpot bundle
+3. Import the `.penpot` in Penpot to inspect and iterate visually
+
 ### What It Does
 - **Validate** a scaffold against a strict schema
 - **Compute layout** frames for chosen viewport(s)
@@ -89,10 +99,14 @@ Artifacts and diagnostics are written to a timestamped run folder under `.flip/r
 - **How to use**: In Penpot, choose File → Import and select the generated `.zip` or `.penpot` file.
 - **Current limitations**:
   - Single page with one artboard per export (per chosen viewport)
-  - Supported layers: `group`, `rectangle`, `text` only
+  - Supported layer types (subset): `group`, `frame`, `rect`, `text`
   - No interactions, prototyping links, or components/instances
   - Basic styles only; custom fonts are not embedded unless provided as assets
   - Round‑trip editing back into FLIP is not supported
+
+### Related projects / links
+- LUMA (generate and evaluate scaffolds): `https://github.com/JohanBellander/luma`
+- Penpot (import and inspect designs): `https://penpot.app/`
 
 ### Testing
 ```bash
