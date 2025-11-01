@@ -410,6 +410,46 @@ function computeLayout(root: any, viewportW: number, viewportH: number, settings
       return frame;
     }
 
+    // Minimal table layout: occupy available width, compute height from headers + rows
+    if (type === "Table") {
+      const columns: any[] = Array.isArray(node?.columns) ? node.columns : [];
+      const requestedRows = Number.isFinite((node as any)?.rows) ? Math.max(0, Number((node as any).rows)) : 3;
+      const headerH = 32;
+      const rowH = 24;
+      const rowGap = 8;
+      const bodyH = requestedRows > 0 ? (requestedRows * rowH + Math.max(0, requestedRows - 1) * rowGap) : 0;
+      const totalH = headerH + (bodyH > 0 ? (8 + bodyH) : 0);
+      const measured = { w: Math.max(0, availW), h: Math.max(0, totalH) };
+      const size = { w: measured.w, h: measured.h };
+      const frame = { x, y, w: size.w, h: size.h };
+      frames[id] = frame;
+      return frame;
+    }
+
+    // Treat Form like a vertical stack of fields + actions
+    if (type === "Form") {
+      const padding = Number.isFinite(node?.padding) ? node.padding : 0;
+      const gap = Number.isFinite(node?.gap) ? node.gap : 8;
+      const fields: any[] = Array.isArray(node?.fields) ? node.fields : [];
+      const actions: any[] = Array.isArray(node?.actions) ? node.actions : [];
+      const children: any[] = [...fields, ...actions];
+      const innerW = Math.max(0, availW - padding * 2);
+      let cursorY = y + padding;
+      let maxChildW = 0;
+      for (let i = 0; i < children.length; i++) {
+        const child = children[i];
+        const childFrame = layoutNode(child, x + padding, cursorY, innerW, Number.POSITIVE_INFINITY);
+        frames[child.id || ""] = { x: x + padding, y: Math.round(cursorY), w: childFrame.w, h: childFrame.h };
+        cursorY += childFrame.h + (i < children.length - 1 ? gap : 0);
+        maxChildW = Math.max(maxChildW, childFrame.w);
+      }
+      const measured = { w: Math.max(maxChildW + padding * 2, 0), h: Math.max(cursorY - y + padding - (children.length > 0 ? 0 : padding), padding * 2) };
+      const size = { w: measured.w, h: measured.h };
+      const frame = { x, y, w: size.w, h: size.h };
+      frames[id] = frame;
+      return frame;
+    }
+
     const fallback = { x, y, w: 0, h: 0 };
     frames[id] = fallback;
     return fallback;
