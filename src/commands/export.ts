@@ -801,10 +801,12 @@ export function buildExportFilesBundleEntries(args: {
         };
       }
 
-      // Recurse for groups and collect child ids
-      const children: any[] = Array.isArray(layer?.children) ? layer.children : [];
+      // Recurse for groups and collect child ids (support both 'children' and 'layers')
+      const rawChildren: any[] = Array.isArray(layer?.children)
+        ? layer.children
+        : (Array.isArray(layer?.layers) ? layer.layers : []);
       const childIds: string[] = [];
-      children.forEach((child) => {
+      rawChildren.forEach((child) => {
         const childId = String(child?.id || genId());
         childIds.push(childId);
         emitShape(childId, id, child);
