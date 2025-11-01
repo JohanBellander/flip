@@ -104,7 +104,7 @@ export async function runExport(options: ExportOptions): Promise<number> {
 
     // Prepare files for ZIP depending on target format
     const files: Array<{ name: string; content: string }> = options.penpotBundle
-      ? buildExportFilesBundleEntries({ pageJson, fileId, pageId })
+      ? buildExportFilesBundleEntries({ pageJson, fileId, pageId, styles: theme })
       : [
           { name: "manifest.json", content: JSON.stringify(buildManifest(), null, 2) },
           { name: "document.json", content: JSON.stringify(buildDocumentJson(theme), null, 2) },
@@ -663,10 +663,12 @@ export function buildExportFilesBundleEntries(args: {
   fileId?: string;
   pageId?: string;
   fileName?: string;
+  styles?: PenpotStyles;
 }): Array<{ name: string; content: string }> {
   const fileId = args.fileId ?? randomUUID();
   const pageId = args.pageId ?? randomUUID();
   const fileName = args.fileName ?? "FLIP Export";
+  const themeStyles = args.styles;
 
   const manifest = buildPenpotExportFilesManifest({
     files: [{ id: fileId, name: fileName }],
@@ -770,8 +772,10 @@ export function buildExportFilesBundleEntries(args: {
         pageId: pageId,
       };
 
-      if (base.type === "artboard" && (!Array.isArray(base.fills) || base.fills.length === 0)) {
-        base.fills = [{ fillColor: "#FFFFFF", fillOpacity: 1 }];
+      // Set background for top-level artboard/frame
+      if (parentId === null && (!Array.isArray(base.fills) || base.fills.length === 0)) {
+        const bg = themeStyles?.colors?.surface ?? "#FFFFFF";
+        base.fills = [{ fillColor: bg, fillOpacity: 1 }];
       }
 
       if (layer?.type === "text" && layer?.text) {
