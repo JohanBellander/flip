@@ -25,24 +25,24 @@ FLIP is designed to be used together with **LUMA** — generate/validate the sca
 
 Windows (PowerShell):
 ```powershell
-irm https://raw.githubusercontent.com/JohanBellander/flip/main/scripts/install.ps1 | iex
+irm https://raw.githubusercontent.com/JohanBellander/FLIP/main/scripts/install.ps1 | iex
 ```
 
 macOS/Linux:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/JohanBellander/flip/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/JohanBellander/FLIP/main/scripts/install.sh | bash
 ```
 
 Develop branch (latest in-progress features):
 
 PowerShell:
 ```powershell
-$env:FLIP_BRANCH='develop'; irm https://raw.githubusercontent.com/JohanBellander/flip/main/scripts/install.ps1 | iex
+$env:FLIP_BRANCH='develop'; irm https://raw.githubusercontent.com/JohanBellander/FLIP/main/scripts/install.ps1 | iex
 ```
 
 Bash:
 ```bash
-FLIP_BRANCH=develop curl -fsSL https://raw.githubusercontent.com/JohanBellander/flip/main/scripts/install.sh | bash
+FLIP_BRANCH=develop curl -fsSL https://raw.githubusercontent.com/JohanBellander/FLIP/main/scripts/install.sh | bash
 ```
 
 ### Install (from source)
